@@ -1,0 +1,168 @@
+
+version: "2.4"
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - iot
+
+  controller:
+    build: ./controller
+    container_name: controller
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=smartcity/#
+      - METRICS_PORT=8000
+    networks:
+      - iot
+    depends_on:
+      - mosquitto
+
+  device_a:
+    build: ./devices/device_a
+    container_name: device_a
+    environment:
+      - DEVICE_NAME=Sensor_A
+      - APP=air_quality
+      - TOPIC=smartcity/air_quality
+      - INTERVAL_SECONDS=10
+      - PAYLOAD_BYTES=200
+      - NETEM_DELAY_MS=50
+      - NETEM_JITTER_MS=10
+      - NETEM_LOSS_PCT=0.1
+      - METRICS_PORT=8000
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 128m
+    cpus: 0.2
+    networks:
+      - iot
+    depends_on:
+      - mosquitto
+
+  device_b:
+    build: ./devices/device_b
+    container_name: device_b
+    environment:
+      - DEVICE_NAME=Sensor_B
+      - APP=street_light
+      - TOPIC=smartcity/street_light
+      - INTERVAL_SECONDS=5
+      - PAYLOAD_BYTES=150
+      - NETEM_DELAY_MS=30
+      - NETEM_JITTER_MS=5
+      - NETEM_LOSS_PCT=0.05
+      - METRICS_PORT=8000
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 512m
+    cpus: 0.5
+    networks:
+      - iot
+    depends_on:
+      - mosquitto
+
+  device_c:
+    build: ./devices/device_c
+    container_name: device_c
+    environment:
+      - DEVICE_NAME=Sensor_C
+      - APP=traffic_cam
+      - TOPIC=smartcity/traffic_cam
+      - INTERVAL_SECONDS=1
+      - PAYLOAD_BYTES=5000
+      - NETEM_DELAY_MS=15
+      - NETEM_JITTER_MS=3
+      - NETEM_LOSS_PCT=0.01
+      - METRICS_PORT=8000
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 1024m
+    cpus: 1.0
+    networks:
+      - iot
+    depends_on:
+      - mosquitto
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - iot
+    depends_on:
+      - controller
+      - device_a
+      - device_b
+      - device_c
+      - cadvisor
+      - node-exporter
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - iot
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    pid: host
+    network_mode: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    # node-exporter runs on host network, so Prometheus will hit host.docker.internal:9100 from Linux host context
+    # but inside Compose network we'll use host.docker.internal via extra_hosts below
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - iot
+    depends_on:
+      - prometheus
+
+networks:
+  iot:
+    driver: bridge
