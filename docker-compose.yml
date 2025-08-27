@@ -29,8 +29,8 @@ services:
     build: ./devices/device_a
     container_name: device_a
     environment:
-      - DEVICE_NAME=Sensor_A
-      - APP=air_quality
+      - DEVICE_NAME=ESP8266
+      - APP=PurpleAir_PA-II
       - TOPIC=smartcity/air_quality
       - INTERVAL_SECONDS=10
       - PAYLOAD_BYTES=200
@@ -42,8 +42,10 @@ services:
       - MQTT_PORT=1883
     cap_add:
       - NET_ADMIN
-    mem_limit: 128m
-    cpus: 0.2
+    #mem estava em 128m
+    mem_limit: 64m
+    #cpu estava em 0.2
+    cpus: 0.1
     networks:
       - iot
     depends_on:
@@ -53,8 +55,8 @@ services:
     build: ./devices/device_b
     container_name: device_b
     environment:
-      - DEVICE_NAME=Sensor_B
-      - APP=street_light
+      - DEVICE_NAME=ARM-Cortex-M3
+      - APP=CityTouch-LightWave
       - TOPIC=smartcity/street_light
       - INTERVAL_SECONDS=5
       - PAYLOAD_BYTES=150
@@ -66,8 +68,10 @@ services:
       - MQTT_PORT=1883
     cap_add:
       - NET_ADMIN
-    mem_limit: 512m
-    cpus: 0.5
+    #mem estava em 512m
+    mem_limit: 128m
+    #cpu estava em 0.5
+    cpus: 0.2
     networks:
       - iot
     depends_on:
@@ -77,8 +81,8 @@ services:
     build: ./devices/device_c
     container_name: device_c
     environment:
-      - DEVICE_NAME=Sensor_C
-      - APP=traffic_cam
+      - DEVICE_NAME=ARM-Cortex-A9-dual-core
+      - APP=Axis-Q1700-LE
       - TOPIC=smartcity/traffic_cam
       - INTERVAL_SECONDS=1
       - PAYLOAD_BYTES=5000
@@ -90,7 +94,8 @@ services:
       - MQTT_PORT=1883
     cap_add:
       - NET_ADMIN
-    mem_limit: 1024m
+    #mem estava em 1024m
+    mem_limit: 512m
     cpus: 1.0
     networks:
       - iot
@@ -113,6 +118,8 @@ services:
       - device_c
       - cadvisor
       - node-exporter
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
