@@ -1,0 +1,11 @@
+
+apiVersion: 1
+providers:
+  - name: 'SmartCity'
+    orgId: 1
+    folder: ''
+    type: file
+    editable: true
+    disableDeletion: false
+    options:
+      path: /var/lib/grafana/dashboards

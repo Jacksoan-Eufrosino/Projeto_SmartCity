@@ -1,0 +1,185 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    networks:
+      services_net:
+        ipv4_address: 10.10.20.2
+
+  controller:
+    build: ./controller
+    container_name: controller
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=smartcity/#
+      - METRICS_PORT=8000
+
+  device_a:
+    build: ./devices/device_a
+    container_name: device_a
+    restart: unless-stopped
+    ports:
+      - "9101:9100"
+    environment:
+      - DEVICE_NAME=ESP8266
+      - APP=PurpleAir_PA-II
+      - TOPIC=smartcity/air_quality
+      - INTERVAL_SECONDS=10
+      - PAYLOAD_BYTES=200
+      - NETEM_DELAY_MS=50
+      - NETEM_JITTER_MS=10
+      - NETEM_LOSS_PCT=0.1
+      - METRICS_PORT=8000
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 64m
+    cpus: 0.1
+    networks:
+      devices_net:
+        ipv4_address: 10.10.10.3
+
+  device_b:
+    build: ./devices/device_b
+    container_name: device_b
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    ports:
+      - "9102:9100"
+    environment:
+      - DEVICE_NAME=ARM-Cortex-M3
+      - APP=CityTouch-LightWave
+      - TOPIC=smartcity/street_light
+      - INTERVAL_SECONDS=5
+      - PAYLOAD_BYTES=150
+      - NETEM_DELAY_MS=30
+      - NETEM_JITTER_MS=5
+      - NETEM_LOSS_PCT=0.05
+      - METRICS_PORT=8000
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 128m
+    cpus: 0.2
+    networks:
+      devices_net:
+        ipv4_address: 10.10.10.4
+
+  device_c:
+    build: ./devices/device_c
+    container_name: device_c
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    ports:
+      - "9103:9100"
+    environment:
+      - DEVICE_NAME=ARM-Cortex-A9-dual-core
+      - APP=Axis-Q1700-LE
+      - TOPIC=smartcity/traffic_cam
+      - INTERVAL_SECONDS=1
+      - PAYLOAD_BYTES=5000
+      - NETEM_DELAY_MS=15
+      - NETEM_JITTER_MS=3
+      - NETEM_LOSS_PCT=0.01
+      - METRICS_PORT=8000
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+    cap_add:
+      - NET_ADMIN
+    mem_limit: 512m
+    cpus: 1.0
+    networks:
+      devices_net:
+        ipv4_address: 10.10.10.5
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    cap_add:
+      - NET_ADMIN
+    networks:
+      services_net:
+        ipv4_address: 10.10.20.4
+      devices_net:
+        ipv4_address: 10.10.10.10
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    pid: host
+    network_mode: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      services_net:
+        ipv4_address: 10.10.20.6
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.24.0
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    volumes:
+      - ./blackbox/blackbox.yml:/config/blackbox.yml # Mapeia o novo arquivo de config
+    command: --config.file=/config/blackbox.yml
+    ports:
+      - "9115:9115"
+    networks:
+      services_net:
+        ipv4_address: 10.10.20.5
+
+
+networks:
+  devices_net:
+    external: true
+  services_net:
+    external: true
+
+volumes:
+  grafana-data:
