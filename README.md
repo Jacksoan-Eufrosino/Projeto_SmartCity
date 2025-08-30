@@ -39,7 +39,7 @@ A topologia do Projeto SmartCity representa a estrutura de comunicação entre o
 🔄 Fluxo de dados: todos os dispositivos enviam suas informações para o Router → Router encaminha para o Prometheus → Prometheus disponibiliza os dados para o Grafana.
 
 <p align="center">
-  <img src="https://github.com/antonyllz/IpApi/blob/main/img.png?raw=true" alt="Projeto SmartCity" width="600"/>
+  <img src="https://github.com/antonyllz/IpApi/blob/main/img01.png?raw=true" alt="Projeto SmartCity" width="600"/> 
 </p>
 
 ---
