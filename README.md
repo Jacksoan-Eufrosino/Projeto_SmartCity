@@ -1,114 +1,75 @@
-# Projeto Smart City IoT — Guia Passo a Passo
+<h1 align="center">Projeto SmartCity</h1>
 
-Este repositório contém uma base **pronta** para emular uma rede IoT heterogênea com 3 dispositivos, um broker MQTT, um controlador (cloud) e monitoramento com **Prometheus + Grafana**.
+<p align="center">
+Emulação e monitoramento de redes IoT heterogêneas em um ambiente de Smart City, com dispositivos simulando qualidade do ar, iluminação pública e tráfego, usando Mininet, Docker, Prometheus e Grafana.
+</p>
 
-## 1) Pré-requisitos (Ubuntu Desktop 22.04+)
 
-```bash
-# 1) Atualizar pacotes
-sudo apt update && sudo apt -y upgrade
+## 🧔🏻 Equipe
 
-# 2) Instalar Docker Engine + Compose plugin
-sudo apt -y install ca-certificates curl gnupg lsb-release
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg]   https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" |   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+- **Jacksoan Eufrosino de Freitas** — 20231380018 
+- **Antony César Pereira de Araújo** — 20231380013  
+- **Gabriel Lavor de Albuquerque** — 20231380037
 
-sudo apt update
-sudo apt -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+## 📝 Resumo
 
-# 3) Permitir seu usuário usar Docker sem sudo (faça logout/login após)
-sudo usermod -aG docker $USER
-```
+**Projeto_SmartCity** é uma base pronta para **emular e monitorar redes IoT heterogêneas** em um ambiente de cidade inteligente.  
+A solução integra **Mininet** para simulação de rede, **Docker** para conteinerização dos dispositivos, além de **Prometheus + Grafana** para coleta e visualização de métricas.
 
-Verifique:
-```bash
-docker run --rm hello-world
-docker compose version
-```
+O projeto conta com **três dispositivos IoT representativos** de aplicações reais em Smart Cities:
 
-## 2) Subir a arquitetura
+- 🌬️ **Air-Quality (PurpleAir PA-II):** mede PM2.5, PM10, temperatura, umidade e AQI, usado em monitoramento ambiental.  
+- 💡 **Street Light (Philips CityTouch):** controlador de postes inteligentes com funções de consumo, falhas e agendamento.  
+- 🚦 **Traffic Cam (Axis Q1700-LE):** câmera IP para leitura automática de placas (ANPR) e monitoramento de tráfego.  
 
-Na raiz do projeto:
+---
 
-```bash
-docker compose up -d --build
-docker ps
-```
+## 🗺️ Topologia
 
-Serviços:
-- **Grafana:** http://localhost:3000 (admin / admin)
-- **Prometheus:** http://localhost:9090
-- **cAdvisor:** http://localhost:8080
+A topologia do Projeto SmartCity representa a estrutura de comunicação entre os dispositivos IoT e o monitoramento central:
 
-O Grafana já vem provisionado com a fonte de dados Prometheus e o dashboard **Smart City IoT — Overview**.
+🌬️ **Air-Quality**, 💡 **Street Light** e 🚦 **Traffic Cam**: são os três dispositivos IoT simulados, representando sensores ambientais, iluminação pública e câmeras de tráfego. Cada um funciona em um contêiner Docker isolado.
 
-## 3) O que está sendo emulado
+📶 **Router**: centraliza a comunicação entre os dispositivos IoT e os sistemas de monitoramento. Funciona como um ponto de roteamento da rede emulada.
 
-- **3 dispositivos** (containers) com perfis distintos e **NETEM (tc)** por container para delay/jitter/loss:
-  - `device_a` → `air_quality` (10s, ~200B, 50ms delay, 0.1% loss)
-  - `device_b` → `street_light` (5s, ~150B, 30ms delay, 0.05% loss)
-  - `device_c` → `traffic_cam` (1s, ~5KB, 15ms delay, 0.01% loss)
+📊 **Prometheus**: recebe métricas e dados de todos os dispositivos via rede. Atua como banco de dados de séries temporais para monitoramento.
 
-- **Broker MQTT (Mosquitto)** em `mosquitto:1883`
+📈 **Grafana**: acessa os dados do Prometheus para gerar dashboards e visualizações em tempo real, permitindo análise rápida do estado da rede e dispositivos.
 
-- **Controller (cloud)**: assina `smartcity/#`, mede **latência fim-a-fim** (device→controller) e expõe métricas Prometheus:
-  - `iot_messages_received_total{device,app,topic}`
-  - `iot_e2e_latency_seconds_bucket/sum/count` (histograma)
+🔄 Fluxo de dados: todos os dispositivos enviam suas informações para o Router → Router encaminha para o Prometheus → Prometheus disponibiliza os dados para o Grafana.
 
-- **Cada dispositivo** expõe:
-  - `iot_messages_sent_total{device,app,topic}`
+<p align="center">
+  <img src="https://github.com/antonyllz/IpApi/blob/main/img.png?raw=true" alt="Projeto SmartCity" width="600"/>
+</p>
 
-- **Prometheus** coleta métricas do controller, dos devices, do **cAdvisor** (CPU/RAM/Rede dos containers) e do **node-exporter** (host).
+---
 
-## 4) Ajustar cenários (apps e dispositivos)
+## 💻 Ferramentas Utilizadas
 
-Edite `docker-compose.yml`:
-- **Frequência**: `INTERVAL_SECONDS`
-- **Tamanho dos dados** simulados: `PAYLOAD_BYTES`
-- **Emulação de rede**: `NETEM_DELAY_MS`, `NETEM_JITTER_MS`, `NETEM_LOSS_PCT`
-- **Tópicos e nomes**: `TOPIC`, `DEVICE_NAME`, `APP`
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" width="22" height="22" /> **Linux**  
+- <img src="https://prometheus.io/twitter-image.png?b370f6418ef38b42" width="22" height="22" /> **Prometheus**  
+- <img src="https://cdn.iconscout.com/icon/free/png-256/free-grafana-logo-icon-svg-png-download-2944910.png" width="22" height="22" /> **Grafana**  
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="22" height="22" /> **Python**  
+- <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="22" height="22" /> **Docker**  
 
-Recrie os serviços que mudar:
-```bash
-docker compose up -d --build device_a device_b device_c
-```
 
-## 5) Onde ver as métricas no Grafana
 
-Dashboard: **Smart City IoT — Overview**
-- **E2E Latency p95 by App**: latência (p95) por aplicação
-- **Throughput (msg/s)**: taxa de mensagens recebidas por aplicação
-- **Messages Sent (msg/s)**: taxa de envio por dispositivo
-- **CPU/Mem/Net**: métricas por container (via cAdvisor)
+## ⚡ Principais Funcionalidades
 
-Você pode duplicar e editar o dashboard para criar:
-- Latência por **dispositivo**
-- **Alertas** (p95 > 0.5s, perda aparente etc.)
-- Tráfego por tópico (via recebimento por app)
+- 🌐 **Emulação de Dispositivos IoT**  
+  Simulação de sensores inteligentes (qualidade do ar, iluminação pública e tráfego) com recursos de hardware limitados, próximos ao comportamento real.  
 
-## 6) Logs e validação
+- 🛰️ **Emulação de Rede**  
+  Criação de topologias no **Mininet**, aplicando condições reais de rede como latência, jitter e perda de pacotes.  
 
-```bash
-docker logs -f controller
-docker logs -f device_a
-docker logs -f device_b
-docker logs -f device_c
-```
+- 📊 **Monitoramento Centralizado**  
+  Coleta automática de métricas com **Prometheus** e visualização em tempo real via **Grafana**, com possibilidade de alertas personalizados.  
 
-## 7) Parar e limpar
+- 📦 **Ambiente Conteinerizado**  
+  Toda a infraestrutura (dispositivos, broker MQTT e serviços) roda em contêineres **Docker**, garantindo escalabilidade, isolamento e fácil replicação.  
 
-```bash
-docker compose down
-# Para remover volumes (dados Grafana), adicione -v
-docker compose down -v
-```
+- 🔄 **Comunicação via MQTT**  
+  Troca de mensagens entre os dispositivos e o controlador em nuvem usando o protocolo **MQTT**, padrão em aplicações IoT.  
 
-## 8) Extensões (opcional)
 
-- Adicionar **novo dispositivo**: copie uma pasta de device, ajuste variáveis, adicione ao compose.
-- Incluir **Mininet/NetEm no host** para topologias mais complexas.
-- Adicionar **mosquitto-exporter** para métricas do broker.
-- Usar **CoAP/HTTP** em containers alternativos das aplicações para comparar protocolos.
-
-Bom estudo! 🚀
+---
