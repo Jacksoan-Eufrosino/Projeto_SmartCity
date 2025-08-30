@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -1635,5 +1635,5 @@
   "timezone": "browser",
   "title": "Smart City IoT — Dashboard",
   "uid": "849ab4cc-4be8-4c55-bd65-747e070939c3",
-  "version": 8
+  "version": 1
 }
