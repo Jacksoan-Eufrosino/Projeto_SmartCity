@@ -65,7 +65,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  border-radius: 0px 200px 0px 200px;\n  -webkit-border-radius: 0px 200px 0px 200px;\n  -moz-border-radius: 0px 200px 0px 200px;\n  color: White;\n  font-family: sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Dispositivo A\n</div>",
+        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  border-radius: 0px 200px 0px 200px;\n  -webkit-border-radius: 0px 200px 0px 200px;\n  -moz-border-radius: 0px 200px 0px 200px;\n  color: White;\n  font-family: sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  ESP8266\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.1.1",
@@ -91,7 +91,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  border-radius: 0px 200px 0px 200px;\n  -webkit-border-radius: 0px 200px 0px 200px;\n  -moz-border-radius: 0px 200px 0px 200px;\n  color: White;\n  font-family: sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Dispositivo B\n</div>",
+        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  border-radius: 0px 200px 0px 200px;\n  -webkit-border-radius: 0px 200px 0px 200px;\n  -moz-border-radius: 0px 200px 0px 200px;\n  color: White;\n  font-family: sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  ARM-Cortex-M3\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.1.1",
@@ -117,7 +117,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  border-radius: 0px 200px 0px 200px;\n  -webkit-border-radius: 0px 200px 0px 200px;\n  -moz-border-radius: 0px 200px 0px 200px;\n  color: White;\n  font-family: sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Dispositivo C\n</div>",
+        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  border-radius: 0px 200px 0px 200px;\n  -webkit-border-radius: 0px 200px 0px 200px;\n  -moz-border-radius: 0px 200px 0px 200px;\n  color: White;\n  font-family: sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  ARM-Cortex-A9-dual-core\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.1.1",
@@ -795,7 +795,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  background-color: #000000;\n  color: #FFFFFF;\n  font-family: Arial, sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Interface de Rede - Device A 📶\n</div>",
+        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  background-color: #000000;\n  color: #FFFFFF;\n  font-family: Arial, sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Interface de Rede - ESP8266 📶\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.1.1",
@@ -821,7 +821,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  background-color: #000000;\n  color: #FFFFFF;\n  font-family: Arial, sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Interface de Rede - Device B 📶\n</div>",
+        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  background-color: #000000;\n  color: #FFFFFF;\n  font-family: Arial, sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Interface de Rede - ARM-Cortex-M3 📶\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.1.1",
@@ -847,7 +847,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  background-color: #000000;\n  color: #FFFFFF;\n  font-family: Arial, sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Interface de Rede - Device C 📶\n</div>",
+        "content": "<div style=\"\n  font-size: 16px;\n  text-align: center;\n  letter-spacing: 3px;\n  text-shadow: 1px 1px 2px #000000;\n  background-color: #000000;\n  color: #FFFFFF;\n  font-family: Arial, sans-serif;\n  font-weight: 500;\n  position: absolute;\n  padding: 10px;\n\">\n  Interface de Rede - ARM-Cortex-A9-dual-core 📶\n</div>",
         "mode": "html"
       },
       "pluginVersion": "12.1.1",
