@@ -24,6 +24,49 @@ O projeto conta com **três dispositivos IoT representativos** de aplicações r
 
 ---
 
+## 🚀 Como rodar o projeto
+
+### 1. Clonar o repositório
+```bash
+git clone https://github.com/Jacksoan-Eufrosino/Projeto_SmartCity.git
+```
+
+### 2. Entrar no diretório do projeto
+```bash
+cd Projeto_SmartCity
+```
+
+### 3. Atualizar o sistema
+> (Exemplo para distribuições baseadas em **Ubuntu/Debian**)
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### 4. Instalar dependências
+Certifique-se de ter o **Docker** e o **Docker Compose** instalados.  
+Se não tiver, instale com:
+```bash
+sudo apt install docker.io docker-compose -y
+```
+
+### 5. Subir os containers
+Execute o comando abaixo para construir e rodar o ambiente em segundo plano:
+```bash
+docker-compose up -d --build
+```
+
+### 6. Verificar se os containers estão ativos
+```bash
+docker ps
+```
+> Esse comando lista todos os containers que estão em execução.
+
+### 7. Acessar as ferramentas no navegador
+- **Grafana:** [http://127.0.0.1:3000](http://127.0.0.1:3000)  
+- **Prometheus:** [http://127.0.0.1:9090](http://127.0.0.1:9090)
+  
+---
+
 ## 🗺️ Topologia
 
 A topologia do Projeto SmartCity representa a estrutura de comunicação entre os dispositivos IoT e o monitoramento central:
